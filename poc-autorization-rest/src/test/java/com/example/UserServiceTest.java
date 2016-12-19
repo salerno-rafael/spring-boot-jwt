@@ -2,12 +2,18 @@ package com.example;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -26,9 +32,11 @@ public class UserServiceTest {
         ResponseEntity<String> responseEntity = 
         	restTemplate.postForEntity("/login", new User("user1", "1"), String.class);
         String token = responseEntity.getBody();
+       
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(tokenTest, token);
+        assertEquals(tokenTest, responseEntity.getHeaders().get("X-Auth-Token").get(0));
     }
 	
 	@Test
@@ -50,4 +58,38 @@ public class UserServiceTest {
 		        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		        assertTrue(validation);
 	}
+	
+	@Test
+	public void listUsersTestSuccess() {
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("X-Auth-Token",tokenTest);
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		
+		ResponseEntity<User[]> responseEntity =   restTemplate.postForEntity("/users",entity,User[].class);
+
+		List<User> users = Arrays.asList(responseEntity.getBody());
+		
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(users.size(),3);
+		assertEquals(tokenTest, responseEntity.getHeaders().get("X-Auth-Token").get(0));
+	}
+	
+	@Test
+	public void listUsersTestFail() {
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("X-Auth-Token","11313123");
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		
+		ResponseEntity<User[]> responseEntity =   restTemplate.postForEntity("/users",entity,User[].class);
+
+		List<User> users = Arrays.asList(responseEntity.getBody());
+		
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+		assertEquals(users.size(),0);
+	}
+
 }
