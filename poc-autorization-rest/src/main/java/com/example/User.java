@@ -6,6 +6,7 @@ public class User {
 	private String pass;
 
 	public User(){}
+	
 	public User(String user, String pass) {
 		this.user = user;
 		this.pass = pass;
