@@ -28,7 +28,8 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
 	compile 'io.jsonwebtoken:jjwt:0.7.0'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
-	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+	
 }
