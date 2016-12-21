@@ -42,27 +42,13 @@ public class UserService {
 	}
 
 	@RequestMapping(value = "/validation/token", method = RequestMethod.POST)
-	public boolean validation(HttpServletRequest request) throws IOException {
-		return validationToken(request.getHeader("X-Auth-Token"));
+	public boolean validationToken(HttpServletRequest request) throws IOException {
+		return true;
 	}
 	
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	public List<User> listUsers(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		return userBuilder.users;		
-	}
-	
-	private boolean validationToken(String token) throws JsonParseException, JsonMappingException, IOException {
-		String user = authentication.desCompactJws(token);
-		
-		if(user.equals("Invalid Token")) return false;
-		
-		User out =  new ObjectMapper().readValue(user, User.class);
-		
-		Optional<User> userValid = userBuilder.users.stream().
-				filter(x-> x.getUser().equals(out.getUser())&& x.getPass().equals(out.getPass()))
-				.findFirst();
-		
-		return userValid.isPresent();
 	}
 	
 }
