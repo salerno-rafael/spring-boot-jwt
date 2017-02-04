@@ -4,20 +4,17 @@ import java.security.Key;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 
-@SpringBootApplication
+
 public class PocAutorizationApplication {
 
 	private final String key =  "teste";
 
 	public static void main(String[] args) {
-		// SpringApplication.run(PocAutorizationApplication.class, args);
 		PocAutorizationApplication poc = new PocAutorizationApplication();
 		poc.desCompactJws(poc.compactJws(new User("user", "password").toString()));
 		
